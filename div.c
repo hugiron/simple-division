@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 char* resize(char* array, int size) {
 	return (char*)realloc(array, size * sizeof(char));
@@ -11,13 +12,11 @@ char* simple_division(int a, int b, int n) {
 	int step = n;
 	int size = step;
 	char* result = (char*)malloc(size * sizeof(char));
+	snprintf(result, sizeof(result), "%d", a / b);
+	a = abs(a) % abs(b);
 	bool point_used = false;
 	bool extend_used = false;
-	int current_index = 0;
-	if (((a & (1 << 31)) ^ (b & (1 << 31))) != 0)
-		result[current_index++] = '-';
-	a = abs(a);
-	b = abs(b);
+	int current_index = strlen(result);
 	while (n > 0 && a != 0) {
 		if (current_index == (size - 1)) {
 			size += step;
@@ -32,8 +31,6 @@ char* simple_division(int a, int b, int n) {
 		} else {
 			if (!point_used) {
 				point_used = true;
-				if (current_index == 0 || (current_index == 1 && result[0] == '-'))
-					result[current_index++] = '0';
 				result[current_index++] = '.';
 			}	
 			if (extend_used) {
@@ -44,6 +41,7 @@ char* simple_division(int a, int b, int n) {
 			}
 			a *= 10;		
 		}
-	}	
+	}
+	result[current_index] = '\0';	
 	return result;
 }
